@@ -10,7 +10,7 @@ The `buildah` cluster build strategy uses a Dockerfile to build a container imag
 
 You can share the `buildah` strategy across different namespaces within your cluster because the {builds-operator} installs the `buildah` strategy at cluster level. 
 
-You can configure the following parameters for the `buildah` strategy:
+You can configure the following parameters for the `buildah` strategy: cbnmnm
 
 .Configuration parameters for `buildah`
 [options="header"]
