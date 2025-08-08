@@ -1,0 +1,86 @@
+// Module is included in the following assemblies:
+//
+// * managing_cluster_configuration/managing-openshift-cluster-configuration.adoc
+
+:_mod-docs-content-type: PROCEDURE
+[id="configuring-rbac_{context}"]
+= configuring RBAC
+
+To provide the sufficient or all required access to the user to work with the Argo CD Instance, Create the cluster-admins group and add your user to it if required.
+
+The defaultPolicy is an empty string meaning no role is assigned automatically, users can log into the instance but they will have no permissions to view anything or perform any actions.
+The next two lines assign the out-of-the-box admin role to two groups, system:cluster-admins and cluster-admins. This means your user needs to be in one of these two groups in order to perform tasks in Argo CD such as deploying Applications.
+The system:cluster-admins only applies to the temporary kube-admin credential and can be ignored unless you are actively using that credential which is not recommended.
+At this point access to your user can be granted in one of two ways:
+
+
+.Prerequisite
+
+* You have login credentials to access the {OCP} cluster with `cluster-admin` privileges.
+* You have installed the `oc` CLI.
+
+.Procedure
+
+. View the Operator configured RBAC for the default instance:
++
+[source,terminal]
+----
+$ oc get argocd openshift-gitops -n openshift-gitops -o=jsonpath='{.spec.rbac}'
+----
+.Output
++
+[source,json]
+----
+{"defaultPolicy":"","policy":"g, system:cluster-admins, role:admin\ng, cluster-admins, role:admin\n","scopes":"[groups]"}
+----
++
+
+. Create the `cluster-admins` group and add your user to it:
++
+[source,terminal]
+----
+$ oc adm groups new cluster-admins <user>
+----
+
+* Replace <user> with the actual username.
+
+.Output
++
+[source,terminal]
+----
+group.user.openshift.io/cluster-admins created
+----
+
+[NOTE]
+====
+For a self-managed ROSA cluster, check if the cluster-admins group exists execute the following command:
+oc get groups
+If however the group does exist already, check if your user is a part of the cluster-admins group in the output that was received when you ran oc get groups. If your user is not part of the group, then add it to the group with the following command: 
+oc adm groups add-users cluster-admins <user>
+====
+
+
+.Verification
+
+. Validate that the group cluster-admins exists and that your user is a part of it:
++
+[source,terminal]
+----
+$ oc get groups cluster-admins
+----
+.Output
++
+[source,terminal]
+----
+NAME             USERS
+
+cluster-admins   <user>
+----
+This should show the cluster-admins  group existing with your user assigned to it
+
+[IMPORTANT]
+====
+if you had to create or modify the cluster-admins  group you will need to log out of Argo CD and then log back in again so the cluster-admins  group will become associated with your user. To validate that you have been assigned to the cluster-admins  group within Argo CD, check the User Info section as per here:
+====
+
+
