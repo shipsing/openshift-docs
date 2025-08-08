@@ -6,8 +6,8 @@
 [id="access-the-default-argocd-instance_{context}"]
 = Access the default Argo CD instance
 
-You can access the default instance through the Argo CD user interface.
- 
+After analyzing the default Argo CD instance details, you can access it through the Argo CD UI to check whether it is avaialble for use.
+
 
 .Prerequisite
 
